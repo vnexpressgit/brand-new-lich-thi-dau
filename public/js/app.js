@@ -719,7 +719,7 @@ function renderSCSComboView(grouped) {
                   </tbody>
                 </table>
               `}
-              <button class="vne-scs-pill-btn" onclick="openLeagueStandingsModal(${league.id})">Chi tiết &gt;</button>
+              <a class="vne-scs-pill-btn" href="/giai-dau/${leagueSlug}/bang-xep-hang" style="text-decoration:none; display:inline-block; text-align:center;">Chi tiết &gt;</a>
             </div>
           </div>
         </div>
@@ -746,10 +746,11 @@ async function loadStandings() {
       const l = leagues.find(x => x.id === id) || { vnName: 'Giải đấu', name: 'League' };
       const list = state.standingsMap[id] || [];
       const top5 = list.slice(0, 5);
+      const leagueSlug = l.slug || 'ngoai-hang-anh';
 
       return `
         <div class="vne-standings-card">
-          <div class="vne-standings-header">
+          <div class="vne-standings-header" style="cursor: pointer;" onclick="window.location.href='/giai-dau/${leagueSlug}/bang-xep-hang'">
             <div class="vne-standings-league-title">
               <span style="display:inline-block; width:4px; height:12px; background:var(--vne-red); border-radius:2px;"></span>
               <span>${l.vnName || l.name}</span>
@@ -786,7 +787,7 @@ async function loadStandings() {
           </table>
 
           <div class="vne-standings-footer">
-            <a class="vne-standings-more-link" onclick="openLeagueStandingsModal(${id})">
+            <a class="vne-standings-more-link" href="/giai-dau/${leagueSlug}/bang-xep-hang">
               <span>Xem chi tiết</span> &gt;
             </a>
           </div>
@@ -868,88 +869,12 @@ function renderNewsPagination(currentPage, totalPages) {
   container.innerHTML = buttons;
 }
 
-// Open Full League Standings Modal
-async function openLeagueStandingsModal(leagueId) {
-  const modal = document.getElementById('modal-standings');
-  const title = document.getElementById('modal-standings-title');
-  const body = document.getElementById('modal-standings-body');
-
-  const league = state.config?.leagues.find(l => l.id === leagueId) || { vnName: 'Giải đấu' };
-  title.innerText = `BẢNG XẾP HẠNG CHI TIẾT - ${league.vnName.toUpperCase()}`;
-  body.innerHTML = '<div style="text-align: center; padding: 30px;">Đang tải dữ liệu xếp hạng đầy đủ...</div>';
-  modal.classList.add('open');
-
-  try {
-    let list = state.standingsMap[leagueId];
-    if (!list || list.length === 0) {
-      const res = await fetch(`/api/standings?league_id=${leagueId}`);
-      const data = await res.json();
-      list = data.data || [];
-    }
-
-    if (list.length === 0) {
-      body.innerHTML = '<div style="text-align: center; padding: 30px; color: #999;">Giải đấu loại trực tiếp hoặc chưa có bảng xếp hạng mùa này.</div>';
-      return;
-    }
-
-    body.innerHTML = `
-      <table class="vne-table-full">
-        <thead>
-          <tr>
-            <th style="width: 25px;">#</th>
-            <th>Câu lạc bộ</th>
-            <th>Trận</th>
-            <th>Thắng</th>
-            <th>Hòa</th>
-            <th>Thua</th>
-            <th>BT</th>
-            <th>BB</th>
-            <th>HS</th>
-            <th>Điểm</th>
-            <th>Phong độ</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${list.map(s => {
-            const played = s.all?.matchs_played ?? s.all?.played ?? 0;
-            const win = s.all?.win ?? 0;
-            const draw = s.all?.draw ?? 0;
-            const lose = s.all?.lose ?? 0;
-            const gf = s.all?.goals_for ?? 0;
-            const ga = s.all?.goals_against ?? 0;
-            const diff = s.goals_diff >= 0 ? `+${s.goals_diff}` : s.goals_diff;
-            const form = s.forme ? s.forme.split('').map(f => {
-              const bg = f === 'W' ? '#16a34a' : f === 'D' ? '#ca8a04' : '#dc2626';
-              return `<span style="display:inline-block; width:16px; height:16px; border-radius:3px; background:${bg}; color:white; font-size:10px; line-height:16px; text-align:center; font-weight:700; margin: 0 1px;">${f}</span>`;
-            }).join('') : '-';
-
-            return `
-              <tr>
-                <td style="font-weight: 700; color: ${s.rank <= 4 ? '#1976d2' : '#555'}">${s.rank}</td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <img src="${s.logo}" style="width: 20px; height: 20px; object-fit: contain;" onerror="this.src='https://is.vnecdn.net/objects/teams/42.png?v=1'">
-                    <span style="font-weight: 600;">${s.team_name}</span>
-                  </div>
-                </td>
-                <td>${played}</td>
-                <td>${win}</td>
-                <td>${draw}</td>
-                <td>${lose}</td>
-                <td>${gf}</td>
-                <td>${ga}</td>
-                <td style="font-weight: 600;">${diff}</td>
-                <td style="font-weight: 800; color: var(--vne-red);">${s.points}</td>
-                <td>${form}</td>
-              </tr>
-            `;
-          }).join('')}
-        </tbody>
-      </table>
-    `;
-  } catch (err) {
-    body.innerHTML = '<div style="text-align: center; padding: 30px; color: #d32f2f;">Lỗi khi tải bảng xếp hạng.</div>';
-  }
+// Open Full League Standings
+function openLeagueStandingsModal(leagueId) {
+  const leagues = state.config?.leagues || [];
+  const league = leagues.find(l => l.id === leagueId);
+  const slug = league?.slug || 'ngoai-hang-anh';
+  window.location.href = `/giai-dau/${slug}/bang-xep-hang`;
 }
 
 // Open Highlight Video Simulator Modal
