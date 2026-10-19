@@ -45,9 +45,24 @@ function formatTemplateDateOnly(dateStr) {
   return `${dayName} ${day}/${month}/${year}`;
 }
 
+// Detect initial mode from independent SEO URL or query param
+function detectInitialMode() {
+  const path = window.location.pathname.toLowerCase();
+  const urlParams = new URLSearchParams(window.location.search);
+  const modeParam = urlParams.get('mode');
+
+  if (path === '/ket-qua' || path === '/ket-qua-bong-da' || modeParam === 'past') {
+    return 'past';
+  } else if (path === '/live' || modeParam === 'live') {
+    return 'live';
+  } else {
+    return 'future';
+  }
+}
+
 // Application State
 const state = {
-  currentMode: 'future', // 'future' | 'past' | 'live'
+  currentMode: detectInitialMode(), // 'future' | 'past' | 'live'
   selectedDate: TODAY_DATE, // Active 'Hôm nay' immediately on access
   selectedLeague: null,
   selectedTeam: null,
@@ -65,7 +80,7 @@ const state = {
 };
 
 // Initialize
-document.addEventListener('DOMContentLoaded', async () => {
+async function initApp() {
   if (window.lucide) lucide.createIcons();
   setupEventListeners();
 
@@ -78,6 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   updateHeaderClock();
   setInterval(updateHeaderClock, 30000);
 
+  updateModeUI(state.currentMode, false);
   await loadConfig();
   generateDateTabs();
   await Promise.all([
@@ -86,7 +102,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadNews()
   ]);
   checkLiveMatches();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 // Event Listeners
 function setupEventListeners() {
@@ -358,25 +380,58 @@ function slideDates(direction) {
 }
 
 // Mode Switcher (Lịch thi đấu / Kết quả / LIVE)
-function switchMode(mode) {
+function switchMode(mode, updateUrl = true, evt = null) {
+  if (evt) evt.preventDefault();
   state.currentMode = mode;
   state.selectedDate = TODAY_DATE; // Khi đổi tab Lịch thi đấu hoặc Kết quả, luôn active ngay 'Hôm nay'
 
-  // Update tabs active state
-  document.querySelectorAll('.vne-tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(`tab-${mode}`).classList.add('active');
-
-  // Update live pill in date bar
-  const livePill = document.getElementById('btn-date-live-pill');
-  if (mode === 'live') {
-    livePill.style.backgroundColor = '#9f224e';
-  } else {
-    livePill.style.backgroundColor = 'var(--vne-badge-live)';
-  }
-
+  updateModeUI(mode, updateUrl);
   generateDateTabs();
   loadFixtures();
 }
+
+// Update UI and URL according to current mode
+function updateModeUI(mode, updateUrl = true) {
+  // Update tabs active state
+  document.querySelectorAll('.vne-tab-btn').forEach(b => b.classList.remove('active'));
+  const activeTabBtn = document.getElementById(`tab-${mode}`);
+  if (activeTabBtn) activeTabBtn.classList.add('active');
+
+  // Update live pill in date bar
+  const livePill = document.getElementById('btn-date-live-pill');
+  if (livePill) {
+    if (mode === 'live') {
+      livePill.style.backgroundColor = '#9f224e';
+    } else {
+      livePill.style.backgroundColor = 'var(--vne-badge-live)';
+    }
+  }
+
+  // Update document title
+  if (mode === 'past') {
+    document.title = 'Kết quả bóng đá hôm nay - VnExpress Thể Thao';
+  } else if (mode === 'live') {
+    document.title = 'Trực tiếp bóng đá hôm nay (LIVE) - VnExpress Thể Thao';
+  } else {
+    document.title = 'Lịch thi đấu bóng đá hôm nay - VnExpress Thể Thao';
+  }
+
+  // Update browser URL using HTML5 History API without reloading
+  if (updateUrl) {
+    const targetUrl = mode === 'past' ? '/ket-qua' : mode === 'live' ? '/live' : '/lich-thi-dau';
+    if (window.location.pathname !== targetUrl) {
+      window.history.pushState({ mode }, '', targetUrl);
+    }
+  }
+}
+
+// Support browser Back/Forward navigation between modes
+window.addEventListener('popstate', (e) => {
+  const newMode = detectInitialMode();
+  if (newMode !== state.currentMode) {
+    switchMode(newMode, false);
+  }
+});
 
 // View Mode Switcher (Timeline vs SCS Combo Card)
 function switchViewMode(view) {

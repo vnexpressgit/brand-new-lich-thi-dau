@@ -9,6 +9,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Independent SEO Friendly Main Routes
+app.get(['/ket-qua', '/ket-qua-bong-da'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get(['/lich-thi-dau', '/lich-thi-dau-bong-da'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/live', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // SEO Friendly League Detail Routes
 app.get('/giai-dau/:slug', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'league-detail.html'));

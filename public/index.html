@@ -25,19 +25,19 @@
           </div>
 
           <div class="vne-nav-tabs">
-            <button class="vne-tab-btn active" id="tab-future" onclick="switchMode('future')">
+            <a href="/lich-thi-dau" class="vne-tab-btn" id="tab-future" onclick="switchMode('future', true, event)">
               <i data-lucide="calendar" style="width: 15px; height: 15px;"></i>
               <span>Lịch thi đấu</span>
-            </button>
-            <button class="vne-tab-btn" id="tab-past" onclick="switchMode('past')">
+            </a>
+            <a href="/ket-qua" class="vne-tab-btn" id="tab-past" onclick="switchMode('past', true, event)">
               <i data-lucide="trophy" style="width: 15px; height: 15px;"></i>
               <span>Kết quả</span>
-            </button>
-            <button class="vne-tab-btn" id="tab-live" onclick="switchMode('live')">
+            </a>
+            <a href="/live" class="vne-tab-btn" id="tab-live" onclick="switchMode('live', true, event)">
               <span class="live-dot-pulse"></span>
               <span>LIVE</span>
               <span class="vne-live-pill-badge" id="live-count-badge">0</span>
-            </button>
+            </a>
           </div>
         </div>
 
