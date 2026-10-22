@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chi tiết trận đấu - VnExpress Thể Thao</title>
   <link rel="icon" type="image/x-icon" href="https://s1.vnecdn.net/vnexpress/restruct/i/v9525/logo/favicon.ico">
-  <link rel="stylesheet" href="/css/style.css?v=5">
+  <link rel="stylesheet" href="/css/style.css?v=6">
   <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -17,16 +17,22 @@
       <div class="vne-topbar">
         <div class="vne-header-left">
           <div class="vne-breadcrumbs" id="vne-header-breadcrumbs">
-            <span class="vne-breadcrumb-desktop-prefix">
+            <!-- Desktop Breadcrumb (VnExpress / Thể thao / Bóng đá) -->
+            <div class="vne-breadcrumb-desktop">
               <a href="/" class="vne-logo-text">VnExpress</a>
               <span class="vne-breadcrumb-slash">/</span>
-              <a href="/">Thể thao</a>
+              <a href="/lich-thi-dau">Thể thao</a>
               <span class="vne-breadcrumb-slash">/</span>
-            </span>
-            <a href="/" class="vne-breadcrumb-mobile-icon" title="VnExpress Thể thao" aria-label="Trang chủ VnExpress"></a>
-            <a href="/ket-qua" id="breadcrumb-parent-link" class="vne-breadcrumb-parent">Kết quả</a>
-            <span class="vne-breadcrumb-slash">/</span>
-            <a href="/giai-dau/champions-league" id="breadcrumb-league-link" class="vne-breadcrumb-league" style="color: var(--vne-text-main); font-weight: 700;">Champions League</a>
+              <a href="/lich-thi-dau" class="vne-breadcrumb-bongda">Bóng đá</a>
+            </div>
+
+            <!-- Mobile Breadcrumb (Pinned 'Kết quả' or 'Lịch thi đấu' / [Tên giải]) -->
+            <div class="vne-breadcrumb-mobile">
+              <a href="/" class="vne-breadcrumb-mobile-icon" title="VnExpress Thể thao" aria-label="Trang chủ VnExpress"></a>
+              <a href="/ket-qua" id="breadcrumb-parent-link" class="vne-breadcrumb-parent">Kết quả</a>
+              <span class="vne-breadcrumb-slash">/</span>
+              <a href="/giai-dau/champions-league" id="breadcrumb-league-link" class="vne-breadcrumb-league">Champions League</a>
+            </div>
           </div>
 
           <div class="vne-nav-tabs">
@@ -405,6 +411,6 @@
     </div>
   </footer>
 
-  <script src="/js/match-detail.js?v=5"></script>
+  <script src="/js/match-detail.js?v=6"></script>
 </body>
 </html>
