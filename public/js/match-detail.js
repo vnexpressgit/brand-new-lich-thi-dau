@@ -114,6 +114,7 @@ async function loadMatchDetailData() {
     }
 
     renderLeftSidebar();
+    renderLeagueHeader(data.league, data.match);
     renderMatchHeader(data.match);
     updateTabLinks();
     renderTimelineTab(data.match, data.events);
@@ -152,8 +153,15 @@ function switchMatchTab(tab, evt = null, pushUrl = true) {
   tabs.forEach(t => {
     const btn = document.getElementById(`md-tab-btn-${t}`);
     const pane = document.getElementById(`md-pane-${t}`);
-    if (btn) btn.classList.toggle('active', t === tab);
-    if (pane) pane.classList.toggle('active', t === tab);
+    const isActive = t === tab;
+    if (btn) {
+      btn.classList.toggle('active', isActive);
+      if (isActive && typeof btn.scrollIntoView === 'function') {
+        // Smoothly scroll active tab into view in mobile horizontal tab strip
+        btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+    if (pane) pane.classList.toggle('active', isActive);
   });
 
   // Update page title
@@ -290,6 +298,68 @@ function toggleMoreTeams() {
 function onSidebarSearch(val) {
   mdState.sidebarSearch = val || '';
   renderLeftSidebar();
+}
+
+// =========================================================================
+// 1.5. LEAGUE HEADER BAR (Image 1 top & Breadcrumbs)
+// =========================================================================
+function renderLeagueHeader(league, match) {
+  const l = league || mdState.data?.league || {
+    id: 2,
+    slug: 'champions-league',
+    name: 'UEFA Champions League',
+    vnName: 'Champions League',
+    logo: 'https://is.vnecdn.net/objects/leagues/2.png?v=1'
+  };
+
+  const m = match || mdState.data?.match;
+  const leagueSlug = l.slug || 'champions-league';
+  const leagueName = l.vnName || l.name || 'Champions League';
+  const leagueFullName = l.name || l.vnName || 'UEFA Champions League';
+  const leagueHref = `/giai-dau/${leagueSlug}`;
+
+  // 1. League Bar above match date/time
+  const linkEl = document.getElementById('md-league-title-link');
+  const logoEl = document.getElementById('md-league-title-logo');
+  const nameEl = document.getElementById('md-league-title-name');
+
+  if (linkEl) {
+    linkEl.href = leagueHref;
+    linkEl.setAttribute('title', `Xem chi tiết giải đấu ${leagueFullName}`);
+  }
+  if (logoEl) {
+    logoEl.src = l.logo || 'https://is.vnecdn.net/objects/leagues/2.png?v=1';
+    logoEl.alt = leagueFullName;
+  }
+  if (nameEl) {
+    nameEl.innerText = leagueFullName;
+  }
+
+  // 2. Breadcrumbs:
+  // - 'Kết quả' (nếu đang ở trận đấu đã kết thúc) / [Tên giải của trận đấu]
+  // - 'Lịch thi đấu' (Nếu đang ở trong trận đấu đang Live hoặc Chưa diễn ra) / [Tên giải của trận đấu]
+  // User có thể click ngược về tên giải để đi về trang Chi tiết giải đấu
+  const isFinished = m ? (m.isFinished === true || m.statusBadge === 'Kết thúc' || m.status_short === 'FT') : true;
+
+  const parentBreadcrumbEl = document.getElementById('breadcrumb-parent-link');
+  if (parentBreadcrumbEl) {
+    if (isFinished) {
+      parentBreadcrumbEl.href = '/ket-qua';
+      parentBreadcrumbEl.innerText = 'Kết quả';
+      parentBreadcrumbEl.setAttribute('title', 'Về trang Kết quả bóng đá');
+    } else {
+      parentBreadcrumbEl.href = '/lich-thi-dau';
+      parentBreadcrumbEl.innerText = 'Lịch thi đấu';
+      parentBreadcrumbEl.setAttribute('title', 'Về trang Lịch thi đấu bóng đá');
+    }
+  }
+
+  const leagueBreadcrumbEl = document.getElementById('breadcrumb-league-link');
+  if (leagueBreadcrumbEl) {
+    leagueBreadcrumbEl.href = leagueHref;
+    leagueBreadcrumbEl.innerText = leagueName;
+    leagueBreadcrumbEl.setAttribute('title', `Xem chi tiết giải đấu ${leagueName}`);
+  }
 }
 
 // =========================================================================
@@ -446,13 +516,28 @@ function renderStatsTab(match, stats, standings, groupTitle) {
 
   const statsContainer = document.getElementById('md-stats-rows-container');
   if (statsContainer) {
-    statsContainer.innerHTML = (stats || []).map(row => `
-      <div class="vne-md-stat-row">
-        <div class="vne-md-stat-val">${row.home}</div>
-        <div class="vne-md-stat-label">${row.label}</div>
-        <div class="vne-md-stat-val">${row.away}</div>
-      </div>
-    `).join('');
+    statsContainer.innerHTML = (stats || []).map(row => {
+      // Calculate dual-color comparative percentage for mobile visual bar
+      const hNum = parseFloat(String(row.home).replace('%', '')) || 0;
+      const aNum = parseFloat(String(row.away).replace('%', '')) || 0;
+      const total = hNum + aNum;
+      const homePct = total > 0 ? Math.round((hNum / total) * 100) : 50;
+      const awayPct = 100 - homePct;
+
+      return `
+        <div class="vne-md-stat-row">
+          <div class="vne-md-stat-val">${row.home}</div>
+          <div class="vne-md-stat-label-wrap">
+            <span class="vne-md-stat-label">${row.label}</span>
+            <div class="vne-md-stat-bar-track">
+              <div class="vne-md-stat-bar-fill home" style="width: ${homePct}%;"></div>
+              <div class="vne-md-stat-bar-fill away" style="width: ${awayPct}%;"></div>
+            </div>
+          </div>
+          <div class="vne-md-stat-val">${row.away}</div>
+        </div>
+      `;
+    }).join('');
   }
 
   // Inline Standings Table inside Thống kê tab (Image 3)
@@ -515,6 +600,19 @@ function renderLineupsTab(match, lineups) {
   document.getElementById('lu-home-name').innerText = match.home_team.team_name;
   document.getElementById('lu-away-logo').src = match.away_team.logo;
   document.getElementById('lu-away-name').innerText = match.away_team.team_name;
+
+  // Set Mobile Roster Switcher tabs
+  const rHomeLogo = document.getElementById('roster-tab-home-logo');
+  const rHomeName = document.getElementById('roster-tab-home-name');
+  const rAwayLogo = document.getElementById('roster-tab-away-logo');
+  const rAwayName = document.getElementById('roster-tab-away-name');
+  if (rHomeLogo) rHomeLogo.src = match.home_team.logo;
+  if (rHomeName) rHomeName.innerText = match.home_team.team_name;
+  if (rAwayLogo) rAwayLogo.src = match.away_team.logo;
+  if (rAwayName) rAwayName.innerText = match.away_team.team_name;
+
+  // Ensure default home roster is active on mobile
+  switchMobileRoster('home');
 
   document.getElementById('pitch-home-logo').src = match.home_team.logo;
   document.getElementById('pitch-home-name').innerText = match.home_team.team_name;
@@ -630,11 +728,37 @@ function renderLineupsTab(match, lineups) {
   }
 }
 
+// Switch Mobile Lineup Roster View (PSG vs Barca)
+function switchMobileRoster(team) {
+  const btnHome = document.getElementById('btn-roster-home');
+  const btnAway = document.getElementById('btn-roster-away');
+  const colHome = document.getElementById('md-lineup-home-col');
+  const colAway = document.getElementById('md-lineup-away-col');
+
+  if (btnHome) btnHome.classList.toggle('active', team === 'home');
+  if (btnAway) btnAway.classList.toggle('active', team === 'away');
+  if (colHome) colHome.classList.toggle('mobile-active', team === 'home');
+  if (colAway) colAway.classList.toggle('mobile-active', team === 'away');
+}
+
 // =========================================================================
 // 6. TAB 4: KẾT QUẢ GẦN ĐÂY (Image 5)
 // =========================================================================
 function renderRecentFormTab(recentForm) {
   if (!recentForm) return;
+
+  const match = mdState.data?.match;
+  if (match) {
+    const hLogo = document.getElementById('recent-home-subhead-logo');
+    const hName = document.getElementById('recent-home-subhead-name');
+    const aLogo = document.getElementById('recent-away-subhead-logo');
+    const aName = document.getElementById('recent-away-subhead-name');
+
+    if (hLogo) hLogo.src = match.home_team.logo;
+    if (hName) hName.innerText = match.home_team.team_name;
+    if (aLogo) aLogo.src = match.away_team.logo;
+    if (aName) aName.innerText = match.away_team.team_name;
+  }
 
   const homeCol = document.getElementById('md-recent-home-col');
   const awayCol = document.getElementById('md-recent-away-col');
