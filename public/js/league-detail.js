@@ -232,7 +232,7 @@ function renderTopMatchWidget(matches) {
     }
 
     return `
-      <div class="vne-widget-match-item" onclick="openHighlightModal(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}', '${m.goals_home_team}-${m.goals_away_team}', '${escapeHtml(state.data.league.vnName)}', '${m.event_date}')">
+      <div class="vne-widget-match-item" style="cursor: pointer;" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}')">
         <div class="vne-widget-match-time">
           <span>${dateFormatted}</span>
           ${isLive ? '<span class="live-dot-pulse" style="width:6px; height:6px;"></span>' : ''}
@@ -405,7 +405,7 @@ function renderPredictionWidget(matches) {
   container.innerHTML = matches.map(m => {
     const timeFormatted = formatPredictionDate(m.event_date);
     return `
-      <div class="vne-prediction-item">
+      <div class="vne-prediction-item" style="cursor: pointer;" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}')">
         <div class="vne-prediction-kickoff">| ${timeFormatted}</div>
         
         <div class="vne-prediction-teams-row">
@@ -416,8 +416,8 @@ function renderPredictionWidget(matches) {
           <span class="vne-prediction-team-name">${m.away_team.team_name}</span>
         </div>
 
-        <button class="vne-btn-predict" onclick="openPredictModal('${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}', '${timeFormatted}')">
-          Dự đoán
+        <button class="vne-btn-predict" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}', event)">
+          Chi tiết
         </button>
       </div>
     `;
@@ -566,7 +566,7 @@ function filterUpcomingMatches() {
             const timeFormatted = formatSubpageKickoff(m.event_date);
             const isLive = ['1H', '2H', 'HT', 'LIVE'].includes(m.status_short);
             return `
-              <div class="vne-subpage-match-row">
+              <div class="vne-subpage-match-row" style="cursor: pointer;" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}')">
                 <div class="vne-subpage-time-col">
                   <span class="vne-subpage-time-primary">${timeFormatted.time}</span>
                   <span class="vne-subpage-time-secondary">${timeFormatted.date}</span>
@@ -589,9 +589,9 @@ function filterUpcomingMatches() {
                 </div>
 
                 <div class="vne-subpage-action-col">
-                  <button class="vne-btn-subpage-action" onclick="openPredictModal('${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}', '${timeFormatted.time} ${timeFormatted.date}')">
+                  <button class="vne-btn-subpage-action" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}', event)">
                     <i data-lucide="target" style="width:13px; height:13px;"></i>
-                    <span>Dự đoán</span>
+                    <span>Chi tiết</span>
                   </button>
                 </div>
               </div>
@@ -674,7 +674,7 @@ function filterPastMatches() {
             const awayWon = aGoals > hGoals;
 
             return `
-              <div class="vne-subpage-match-row">
+              <div class="vne-subpage-match-row" style="cursor: pointer;" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}')">
                 <div class="vne-subpage-time-col">
                   <div style="display:flex; align-items:center; gap:6px;">
                     <span class="vne-subpage-time-primary">${timeFormatted.time}</span>
@@ -702,9 +702,9 @@ function filterPastMatches() {
                 </div>
 
                 <div class="vne-subpage-action-col">
-                  <button class="vne-btn-subpage-action" onclick="openHighlightModal(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}', '${hGoals}-${aGoals}', '${escapeHtml(state.data.league.vnName)}', '${m.event_date}')">
+                  <button class="vne-btn-subpage-action" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}', event)">
                     <i data-lucide="play-circle" style="width:13px; height:13px; color:#9f224e;"></i>
-                    <span>Highlight</span>
+                    <span>Chi tiết</span>
                   </button>
                 </div>
               </div>
@@ -925,4 +925,23 @@ function formatSubpageKickoff(dateStr) {
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+function toSeoSlug(str) {
+  if (!str) return '';
+  return String(str)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function goToMatchDetail(fixtureId, homeName, awayName, evt = null) {
+  if (evt) evt.stopPropagation();
+  const hSlug = toSeoSlug(homeName) || 'home';
+  const aSlug = toSeoSlug(awayName) || 'away';
+  const idPart = fixtureId || 1001;
+  window.location.href = `/tran-dau/${hSlug}-vs-${aSlug}-${idPart}`;
 }

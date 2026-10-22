@@ -95,6 +95,19 @@ async function initApp() {
 
   updateModeUI(state.currentMode, false);
   await loadConfig();
+
+  // Support incoming ?team_id= or ?league_id= from Match Detail sidebar
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('team_id')) {
+    state.selectedTeam = parseInt(urlParams.get('team_id'));
+    state.selectedDate = null;
+    renderSidebarFilters();
+  } else if (urlParams.get('league_id')) {
+    state.selectedLeague = parseInt(urlParams.get('league_id'));
+    state.selectedDate = null;
+    renderSidebarFilters();
+  }
+
   generateDateTabs();
   await Promise.all([
     loadFixtures(),
@@ -597,20 +610,20 @@ function renderTimelineView(grouped) {
         scoreHtml = `<div class="vne-score-box upcoming">vs</div>`;
       }
 
-      // Action button (Highlight / Chi tiết)
+      // Action button (Highlight / Chi tiết) -> Navigates to Match Detail page
       const actionHtml = isFinished ? `
-        <button class="vne-btn-highlight" onclick="openHighlightModal(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}', '${m.goals_home_team}-${m.goals_away_team}', '${escapeHtml(league.vnName || league.name)}', '${m.event_date}')">
+        <button class="vne-btn-highlight" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}', event)">
           <i data-lucide="video" style="width: 12px; height: 12px;"></i>
-          <span>Highlight</span>
+          <span>Chi tiết</span>
         </button>
       ` : `
-        <button class="vne-btn-highlight" onclick="openHighlightModal(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}', 'vs', '${escapeHtml(league.vnName || league.name)}', '${m.event_date}')">
+        <button class="vne-btn-highlight" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}', event)">
           <span>Chi tiết</span>
         </button>
       `;
 
       return `
-        <div class="vne-match-row">
+        <div class="vne-match-row" style="cursor: pointer;" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}')">
           <div class="vne-match-time-status">
             ${timeStatusHtml}
           </div>
@@ -702,7 +715,7 @@ function renderSCSComboView(grouped) {
               <div style="font-size: 10px; font-weight: 700; color: #6b7280; text-align: center; padding: 2px 0; border-bottom: 1px solid #f0f2f5;">${roundText}</div>
               ${upcoming.length === 0 ? '<div style="color: #999; font-size: 11px; text-align: center; padding: 25px 0;">Không có trận sắp tới</div>' : 
                 upcoming.map(m => `
-                  <div class="vne-scs-match-item" title="${formatTemplateDateTime(m.event_date)}">
+                  <div class="vne-scs-match-item" style="cursor: pointer;" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}')" title="${formatTemplateDateTime(m.event_date)}">
                     <span style="font-weight: 600; font-size: 11px; flex: 1; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${m.home_team.team_name}</span>
                     <span style="padding: 1px 6px; background: #f3f4f6; border-radius: 4px; font-weight: 800; font-size: 11px; margin: 0 6px; color: #111;">${formatMatchItemTime(m.event_date)}</span>
                     <span style="font-weight: 600; font-size: 11px; flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${m.away_team.team_name}</span>
@@ -727,7 +740,7 @@ function renderSCSComboView(grouped) {
               <div style="font-size: 10px; font-weight: 700; color: #6b7280; text-align: center; padding: 2px 0; border-bottom: 1px solid #f0f2f5;">${roundText}</div>
               ${finished.length === 0 ? '<div style="color: #999; font-size: 11px; text-align: center; padding: 25px 0;">Chưa có kết quả mới</div>' : 
                 finished.map(m => `
-                  <div class="vne-scs-match-item" title="${formatTemplateDateTime(m.event_date)}">
+                  <div class="vne-scs-match-item" style="cursor: pointer;" onclick="goToMatchDetail(${m.fixture_id}, '${escapeHtml(m.home_team.team_name)}', '${escapeHtml(m.away_team.team_name)}')" title="${formatTemplateDateTime(m.event_date)}">
                     <span style="font-weight: 600; font-size: 11px; flex: 1; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${m.home_team.team_name}</span>
                     <span style="padding: 1px 6px; background: #e5e7eb; border-radius: 4px; font-weight: 800; font-size: 11px; margin: 0 6px; color: #111;">${m.goals_home_team}-${m.goals_away_team}</span>
                     <span style="font-weight: 600; font-size: 11px; flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${m.away_team.team_name}</span>
@@ -969,4 +982,23 @@ function filterLeague(leagueId) {
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+function toSeoSlug(str) {
+  if (!str) return '';
+  return String(str)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function goToMatchDetail(fixtureId, homeName, awayName, evt = null) {
+  if (evt) evt.stopPropagation();
+  const hSlug = toSeoSlug(homeName) || 'home';
+  const aSlug = toSeoSlug(awayName) || 'away';
+  const idPart = fixtureId || 1001;
+  window.location.href = `/tran-dau/${hSlug}-vs-${aSlug}-${idPart}`;
 }

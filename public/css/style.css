@@ -361,7 +361,8 @@ body {
   border-left: 3px solid var(--vne-dark-header);
 }
 
-.vne-filter-icon {
+.vne-filter-icon,
+.vne-filter-logo {
   width: 18px;
   height: 18px;
   border-radius: 4px;
@@ -370,10 +371,12 @@ body {
   flex-shrink: 0;
 }
 
-.vne-filter-name-col {
+.vne-filter-name-col,
+.vne-filter-info {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
 }
 
 .vne-filter-name {
@@ -2944,4 +2947,1026 @@ body {
     width: auto;
   }
 }
+
+/* =========================================================
+   MATCH DETAIL PAGE STYLES (5-TAB EXACT UI)
+   ========================================================= */
+
+.vne-match-page-container {
+  max-width: var(--vne-max-width);
+}
+
+.vne-match-detail-layout {
+  grid-template-columns: 200px minmax(0, 1fr) 250px;
+  gap: 14px;
+}
+
+.vne-match-detail-card {
+  background: #ffffff;
+  border: 1px solid var(--vne-border);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+/* 1. Top Dark Header Bar (Image 1) */
+.vne-md-topbar {
+  background-color: #323a32;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 16px;
+  line-height: 1.4;
+}
+
+/* 2. Scoreboard Hero Area (Image 1) */
+.vne-md-hero {
+  position: relative;
+  background: #ffffff;
+  padding: 26px 24px 24px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.vne-md-watermark {
+  position: absolute;
+  top: 6px;
+  width: 155px;
+  height: 155px;
+  object-fit: contain;
+  opacity: 0.055;
+  pointer-events: none;
+  user-select: none;
+}
+
+.vne-md-watermark.left {
+  left: -36px;
+}
+
+.vne-md-watermark.right {
+  right: -36px;
+}
+
+.vne-md-status-wrap {
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.vne-md-status-pill {
+  display: inline-block;
+  background-color: #41516c;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 5px;
+}
+
+.vne-md-status-pill.live {
+  background-color: #dc2626;
+}
+
+.vne-md-scoreboard-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.vne-md-team {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.vne-md-team.home {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.vne-md-team.away {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.vne-md-team-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111111;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vne-md-team-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.vne-md-score-pill {
+  background-color: #40506c;
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 700;
+  padding: 6px 26px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-width: 122px;
+  line-height: 1.2;
+}
+
+.vne-md-score-dash {
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.vne-md-halftime {
+  font-size: 13px;
+  color: #333333;
+  margin-top: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.vne-md-scorers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 105px;
+  margin-top: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.vne-md-scorers-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: #333333;
+}
+
+.vne-md-scorers-col.home {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.vne-md-scorers-col.away {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.vne-md-scorer-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.35;
+}
+
+.vne-md-ball-svg {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+/* 3. Sub-Navigation Tabs Bar (Images 2, 3, 4, 5) */
+.vne-md-tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-top: 1px solid #f2f2f2;
+  border-bottom: 1px solid #e5e5e5;
+  background: #ffffff;
+  flex-wrap: wrap;
+}
+
+.vne-md-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border: 1px solid #c2c8d0;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #333333;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vne-md-tab-btn:hover {
+  border-color: #3eb549;
+  color: #268c30;
+}
+
+.vne-md-tab-btn.active {
+  background-color: #3eb549;
+  border-color: #3eb549;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Tab Panes */
+.vne-md-pane {
+  display: none;
+}
+
+.vne-md-pane.active {
+  display: block;
+}
+
+/* 4. TAB 1: DIỄN BIẾN (Image 2) */
+.vne-md-timeline-header {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  align-items: center;
+  margin: 18px 0 6px;
+}
+
+.vne-md-tl-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #333333;
+}
+
+.vne-md-tl-team img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.vne-md-tl-team.home {
+  justify-content: flex-end;
+  padding-right: 14px;
+}
+
+.vne-md-tl-team.away {
+  justify-content: flex-start;
+  padding-left: 14px;
+}
+
+.vne-md-tl-divider {
+  width: 1px;
+  height: 36px;
+  background-color: #cccccc;
+}
+
+.vne-md-timeline-list {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 16px 28px;
+}
+
+.vne-md-tl-row {
+  display: grid;
+  grid-template-columns: 1fr 26px 1fr;
+  align-items: stretch;
+}
+
+.vne-md-tl-minute {
+  background-color: #3eb549;
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.vne-md-tl-minute.first {
+  border-radius: 13px 13px 0 0;
+  padding-top: 4px;
+}
+
+.vne-md-tl-minute.last {
+  border-radius: 0 0 13px 13px;
+  border-bottom: none;
+  padding-bottom: 4px;
+}
+
+.vne-md-tl-side {
+  padding: 6px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 12.5px;
+  color: #333333;
+}
+
+.vne-md-tl-side.home {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.vne-md-tl-side.away {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.vne-tl-event-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.vne-tl-card {
+  display: inline-block;
+  width: 9px;
+  height: 13px;
+  border-radius: 1.5px;
+  transform: rotate(-14deg);
+  flex-shrink: 0;
+}
+
+.vne-tl-card.yellow {
+  background-color: #facc15;
+}
+
+.vne-tl-card.red {
+  background-color: #ef4444;
+}
+
+.vne-tl-sub-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vne-tl-sub-block.home {
+  align-items: flex-end;
+}
+
+.vne-tl-sub-block.away {
+  align-items: flex-start;
+}
+
+.vne-tl-sub-in {
+  color: #333333;
+  font-size: 12.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.vne-tl-sub-out {
+  color: #888888;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.vne-tl-arrow.up {
+  color: #22c55e;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.vne-tl-arrow.down {
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* 5. TAB 2: THỐNG KÊ (Image 3) */
+.vne-md-stats-box {
+  max-width: 500px;
+  margin: 22px auto 26px;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 6px 18px;
+  background: #ffffff;
+}
+
+.vne-md-stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.vne-md-stats-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #333333;
+}
+
+.vne-md-stats-team img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.vne-md-stat-row {
+  display: grid;
+  grid-template-columns: 70px 1fr 70px;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 13px;
+  color: #333333;
+}
+
+.vne-md-stat-row:last-child {
+  border-bottom: none;
+}
+
+.vne-md-stat-val {
+  text-align: center;
+  color: #333333;
+}
+
+.vne-md-stat-label {
+  text-align: center;
+  color: #333333;
+}
+
+/* Inline Standings Table inside Thống kê tab (Image 3) */
+.vne-md-inline-standings-wrap {
+  margin: 0 12px 22px;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.vne-md-inline-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.vne-md-inline-table thead th {
+  padding: 10px 8px;
+  color: #757575;
+  font-weight: 400;
+  font-size: 12px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+  background: #ffffff;
+}
+
+.vne-md-inline-table thead th.th-group-name {
+  text-align: left;
+  padding-left: 12px;
+}
+
+.vne-md-inline-table tbody tr {
+  border-bottom: 1px solid #ebebeb;
+}
+
+.vne-md-inline-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.vne-md-inline-table tbody tr.vne-md-inline-row-highlight {
+  background-color: #f4fbf5;
+}
+
+.vne-md-inline-table tbody td {
+  padding: 8px 6px;
+  text-align: center;
+  color: #333333;
+}
+
+.vne-md-inline-table tbody td.td-rank-colored {
+  width: 32px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.vne-md-inline-table tbody td.rank-blue-main {
+  background-color: #4a69bb;
+}
+
+.vne-md-inline-table tbody td.rank-blue-sub {
+  background-color: #395598;
+}
+
+.vne-md-inline-table tbody td.td-team-cell {
+  text-align: left;
+  padding-left: 10px;
+}
+
+.vne-md-inline-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vne-md-inline-team img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.vne-md-inline-team .fw-bold {
+  font-weight: 700;
+  color: #111111;
+}
+
+.vne-md-inline-table tbody td.td-pts-bold {
+  font-weight: 700;
+  color: #111111;
+}
+
+.vne-md-form-group {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.vne-md-form-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.vne-md-form-badge.win {
+  background-color: #3eb549;
+}
+
+.vne-md-form-badge.draw {
+  background-color: #767676;
+}
+
+.vne-md-form-badge.loss {
+  background-color: #e53935;
+}
+
+/* 6. TAB 3: ĐỘI HÌNH RA SÂN (Image 4) */
+.vne-md-lineup-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 236px minmax(0, 1fr);
+  gap: 10px;
+  padding: 18px 12px 24px;
+  align-items: start;
+}
+
+.vne-md-lineup-team-bar {
+  background-color: #323a32;
+  color: #ffffff;
+  padding: 9px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.vne-md-lineup-team-bar.away {
+  justify-content: flex-end;
+}
+
+.vne-md-lineup-team-bar img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.vne-md-roster-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #ffffff;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.vne-md-roster-header {
+  padding: 11px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #222222;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.vne-md-roster-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-bottom: 1px solid #ebebeb;
+  font-size: 12px;
+  gap: 6px;
+}
+
+.vne-md-roster-row:last-child {
+  border-bottom: none;
+}
+
+.vne-md-roster-left,
+.vne-md-roster-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.vne-md-shirt-num {
+  color: #888888;
+  font-size: 11.5px;
+  min-width: 18px;
+}
+
+.vne-md-roster-right .vne-md-shirt-num {
+  text-align: right;
+}
+
+.vne-md-player-name {
+  color: #222222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vne-md-player-pos {
+  color: #888888;
+  font-size: 11.5px;
+  flex-shrink: 0;
+}
+
+/* Center Soccer Pitch (Image 4) */
+.vne-md-pitch-wrapper {
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #0eab58;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.vne-md-pitch-bar {
+  background-color: #127942;
+  color: #ffffff;
+  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+}
+
+.vne-md-pitch-team {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 500;
+}
+
+.vne-md-pitch-team img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.vne-md-pitch-formation {
+  font-weight: 700;
+}
+
+.vne-md-soccer-field {
+  position: relative;
+  background-color: #0eab58;
+  padding: 10px 8px;
+  height: 560px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.pitch-line-outer {
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  right: 8px;
+  bottom: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+}
+
+.pitch-penalty-top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58%;
+  height: 64px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-top: none;
+}
+
+.pitch-goal-top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48%;
+  height: 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-top: none;
+}
+
+.pitch-arc-top {
+  position: absolute;
+  top: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 46px;
+  height: 20px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-top: none;
+  border-radius: 0 0 26px 26px;
+}
+
+.pitch-halfway-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.85);
+}
+
+.pitch-center-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 68px;
+  height: 68px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+}
+
+.pitch-penalty-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58%;
+  height: 64px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-bottom: none;
+}
+
+.pitch-goal-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48%;
+  height: 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-bottom: none;
+}
+
+.pitch-arc-bottom {
+  position: absolute;
+  bottom: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 46px;
+  height: 20px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-bottom: none;
+  border-radius: 26px 26px 0 0;
+}
+
+.pitch-half {
+  position: relative;
+  z-index: 2;
+  height: 49%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 4px 2px;
+}
+
+.pitch-formation-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.pitch-player-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 60px;
+}
+
+.pitch-player-circle {
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  border: 1.5px solid #ffffff;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.pitch-player-circle.home {
+  background-color: #2c3e55;
+}
+
+.pitch-player-circle.away {
+  background-color: #2541b2;
+}
+
+.pitch-player-label {
+  background-color: rgba(16, 38, 24, 0.78);
+  color: #ffffff;
+  font-size: 9.5px;
+  font-weight: 500;
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-top: 2px;
+  white-space: nowrap;
+  max-width: 58px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 7. TAB 4: KẾT QUẢ GẦN ĐÂY (Image 5) */
+.vne-md-recent-wrap {
+  padding: 18px 16px 26px;
+}
+
+.vne-md-recent-heading {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111111;
+  margin-bottom: 16px;
+}
+
+.vne-md-recent-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+}
+
+.vne-md-recent-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vne-md-recent-card {
+  background-color: #f0f3f8;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.vne-md-recent-card:hover {
+  background-color: #e4eaf3;
+}
+
+.vne-md-recent-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #222222;
+  min-width: 0;
+}
+
+.vne-md-recent-team.left {
+  justify-content: flex-start;
+}
+
+.vne-md-recent-team.right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.vne-md-recent-team img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.vne-md-recent-team span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vne-md-recent-score-pill {
+  background-color: #ffffff;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111111;
+  min-width: 54px;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+/* 8. RIGHT SIDEBAR HIGHLIGHT FOR 2 MATCH TEAMS */
+.vne-md-sidebar-highlight-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background-color: #f0fdf4;
+  border-bottom: 1px solid #dcfce7;
+  font-size: 11px;
+  color: #166534;
+}
+
+.vne-md-highlight-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  flex-shrink: 0;
+}
+
+.vne-table-mini tbody tr.vne-sidebar-row-match-highlight {
+  background-color: #eefbf0 !important;
+  box-shadow: inset 3px 0 0 #22c55e;
+}
+
+.vne-standings-name.match-team-bold {
+  font-weight: 800 !important;
+  color: #15803d !important;
+}
+
+/* Responsive adjustments for Match Detail Page */
+@media (max-width: 1080px) {
+  .vne-md-lineup-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vne-md-pitch-col {
+    order: -1;
+    max-width: 340px;
+    margin: 0 auto 12px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .vne-md-scorers-grid {
+    gap: 24px;
+  }
+
+  .vne-md-recent-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vne-md-team-name {
+    font-size: 14px;
+  }
+
+  .vne-md-team-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .vne-md-score-pill {
+    font-size: 20px;
+    padding: 5px 16px;
+    min-width: 96px;
+  }
+}
+
 
